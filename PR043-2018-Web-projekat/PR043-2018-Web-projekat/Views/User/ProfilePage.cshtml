@@ -1,0 +1,68 @@
+﻿@using PR043_2018_Web_projekat.Models;
+@{
+    ViewBag.Title = "ProfilePage";
+    User user = (User)Session["user"];
+}
+
+@if (user != null)
+{
+    <h1 align="center" style="color: #CC527A; font-family:Calibri; font-size: 25px; font-weight:bold"> Profile </h1>
+    <form method="post" action="\User\EditProfile">
+        <table style="border: 3px solid #CC527A; background-color: #474747; color:#E8175D; width: 300px; margin:auto; font-weight:bold; font-size:18px; text-align:center; border-radius:20px">
+            <tr style="height:120px; text-align:center; padding:20px">
+                <td colspan="2"><img src="~/Images/added_user.png" style="height:100px; width:100px; text-align:center"/></td>
+            </tr>
+            <tr>
+                <td style="text-align:right"> Username: </td>
+                <td style="text-align:left; color:lightgray"> @user.Username </td>
+            </tr>
+            <tr>
+                <td style="text-align:right"> Password: </td>
+                <td style="text-align:left"><input type="text" name="password" placeholder="@user.Password" class="sameInput" /></td>
+            </tr>
+            <tr>
+                <td style="text-align:right"> Name: </td>
+                <td style="text-align:left"><input type="text" name="name" placeholder="@user.Name" class="sameInput" /></td>
+            </tr>
+            <tr>
+                <td style="text-align:right"> Lastname: </td>
+                <td style="text-align:left"><input type="text" name="lastname" placeholder="@user.Lastname" class="sameInput"/></td>
+            </tr>
+            <tr>
+                <td style="text-align:right"> Birthday: </td>
+                <td style="text-align:left"><input type="date" name="dateOfBirth" value="@user.DateOfBirth.ToString("yyyy-MM-dd")" class="sameInput"/></td>
+            </tr>
+            <tr>
+                <td style="text-align:right"> Gender: </td>
+                <td style="text-align:left">
+                    <select name="gender" class="sameInput">
+                        @foreach (Gender g in (Gender[])Enum.GetValues(typeof(Gender)))
+                        {
+                            if (user.Gender == g)
+                            {
+                                <option value="@g" selected>@g</option>
+                            }
+                            else
+                            {
+                                <option value="@g">@g</option>
+                            }
+                        }
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td style="text-align:right"> Email: </td>
+                <td style="text-align:left"><input type="email" name="email" placeholder="@user.Email" class="sameInput"/></td>
+            </tr>
+            <tr>
+                <td style="text-align:right"> Role: </td>
+                <td style="text-align:left; color:lightgray"> @user.Role </td>
+            </tr>
+            <tr><td colspan="2">&nbsp</td></tr>
+            <tr>
+                <td colspan="2"><input type="submit" name="edit" value="Edit Profile" style="width:90%; background-color:#E8175D; color:lightgray; font-weight:bold; font-size:16px"/></td>
+            </tr>
+        </table>
+    </form>
+}
+

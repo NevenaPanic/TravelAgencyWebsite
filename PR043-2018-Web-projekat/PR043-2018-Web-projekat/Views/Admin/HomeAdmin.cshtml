@@ -1,0 +1,184 @@
+﻿@{
+    ViewBag.Title = "HomeAdmin";
+}
+@using PR043_2018_Web_projekat.Models;
+
+<!DOCTYPE html>
+
+@{
+    User u = (User)(Session["user"]);
+    List<User> displayUsers = ViewBag.users;
+}
+
+@if (u.Role == Role.ADMIN)
+{
+    <h1 align="center" style="color: #CC527A; font-family:Calibri; width:50%; float:left; text-align:right">Home</h1>
+    <div style="width:100%">
+        <!-- Search -->
+        <div style="float:right; margin:auto; padding:25px">
+            <form method="get" action="\Admin\SearchUsers">
+                <table style="background-color:#CC527A; text-align:center">
+                    <tr><td colspan="2"> Search </td></tr>
+                    <tr>
+                        <td> Name :</td>
+                        <td><input name="name" type="text" class="sameInput" /></td>
+                    </tr>
+                    <tr>
+                        <td> Lastname :</td>
+                        <td><input name="lastname" type="text" class="sameInput" /></td>
+                    </tr>
+                    <tr>
+                        <td> Role :</td>
+                        <td>
+                            <select name="role" class="sameInput">
+                                <option value=""> All </option>
+                                <option value="ADMIN"> Admin </option>
+                                <option value="MANAGER"> Manager </option>
+                                <option value="TOURIST"> Tourist </option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2"><input type="submit" value="Search" name="search" class="sameInput" /></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2"><input type="submit" value="Show all" name="search" class="sameInput" /></td>
+                    </tr>
+
+                </table>
+            </form>
+        </div>
+        <br />
+        <!-- Sort -->
+        <div style="float:right; margin:auto; padding:25px">
+            <form method="get" action="\Admin\SortUsers">
+                <table style="background-color: #CC527A; text-align:center">
+                    <tr><td colspan="2"> Sort </td></tr>
+                    <tr>
+                        <td>
+                            <select name="type" class="sameInput">
+                                <option value="name"> Name </option>
+                                <option value="lastname"> Lastname </option>
+                                <option value="role"> Role </option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <input type="radio" name="way" value="asc" checked><label> Ascending</label>
+                            <input type="radio" name="way" value="dsc"><label> Descending</label>
+                        </td>
+                    </tr>
+                    <tr><td colspan="2"><input type="submit" value="Sort" class="sameInput" /></td></tr>
+                </table>
+            </form>
+        </div>
+    </div>
+    <div>
+        <table class="userTable" align="center">
+            <tr>
+                <td colspan="9" align="center" style="color: #CC527A; font-size: 20px; font-weight: bold">All users in system:</td>
+            </tr>
+            <tr>
+                <th>Status:</th>
+                <th>Username</th>
+                <th>Password</th>
+                <th>Name</th>
+                <th>Lastname</th>
+                <th>Birthday</th>
+                <th>Gender</th>
+                <th>E-mail</th>
+                <th style="text-align:left">Role</th>
+            </tr>
+            @foreach (User user in displayUsers)
+            {
+                <tr>
+                    @if (user.Role == Role.TOURIST)
+                    {
+                        if ((user as Tourist).Blocked)
+                        {
+                            <th><img src="~/Images/blocked_user.png" style="width:30px; height:30px" /></th>
+                        }
+                        else
+                        {
+                            <th><img src="~/Images/added_user.png" style="width:30px; height:30px" /></th>
+                        }
+                    }
+                    else
+                    {
+                        <th><img src="~/Images/added_user.png" style="width:30px; height:30px" /></th>
+                    }
+                    <th>@user.Username</th>
+                    <th>@user.Password</th>
+                    <th>@user.Name</th>
+                    <th>@user.Lastname</th>
+                    <th>@user.DateOfBirth.Day/@user.DateOfBirth.Month/@user.DateOfBirth.Year</th>
+                    <th>@user.Gender</th>
+                    <th>@user.Email</th>
+                    <th style="text-align:left">@user.Role</th>
+                </tr>
+            }
+            <tr>
+                <td colspan="9" align="center" style="background-color:#A8A7A7">
+                    <a href="\Admin\AddManager" style="color: #E8175D; font-weight:bold; font-size:20px; text-decoration:none"> + &nbsp Add new manager</a>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <br /><br /><br /><br /><br />
+
+    <div>
+        <form method="post" action="\Admin\BlockUser">
+            <table class="userTable" align="center">
+                <tr>
+                    <td colspan="10" align="center" style="color: #CC527A; font-size: 20px; font-weight: bold">Suspicious users in system:</td>
+                </tr>
+                <tr>
+                    <th>Status:</th>
+                    <th>Username</th>
+                    <th>Password</th>
+                    <th>Name</th>
+                    <th>Lastname</th>
+                    <th>Birthday</th>
+                    <th>Gender</th>
+                    <th>E-mail</th>
+                    <th>Blocked</th>
+                    <th>&nbsp;</th>
+                </tr>
+                @foreach (User user in displayUsers.FindAll( x => x.Role == Role.TOURIST))
+                {
+                    <tr>
+                    @if((user as Tourist).NumberOfCancellations >= 2)
+                    { 
+
+                            if ((user as Tourist).Blocked)
+                            {
+                                <th><img src="~/Images/blocked_user.png" style="width:30px; height:30px" /></th>
+                            }
+                            else
+                            {
+                                <th><img src="~/Images/added_user.png" style="width:30px; height:30px" /></th>
+                            }
+                            <th>@user.Username</th>
+                            <th>@user.Password</th>
+                            <th>@user.Name</th>
+                            <th>@user.Lastname</th>
+                            <th>@user.DateOfBirth.Day/@user.DateOfBirth.Month/@user.DateOfBirth.Year</th>
+                            <th>@user.Gender</th>
+                            <th>@user.Email</th>
+                            <th>@(((Tourist)user).Blocked)</th>
+                            <th>
+                                <button style="text-align:center; width:100px;  background-color:#E8175D; color:#363636; float:right; margin-right:15px; border-radius: 10px" type="submit" name="block" value="@user.Username">Block</button>
+                                <button style="text-align:center; width:100px;  background-color:#E8175D; color:#363636; float:right; margin-right:15px; border-radius: 10px" type="submit" name="unblock" value="@user.Username">Unblock</button>
+                            </th>
+                            }
+                    </tr>
+                }
+            </table>
+        </form>
+        <br /><br /><br /><br />
+    </div>
+
+
+}
+

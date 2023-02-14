@@ -1,0 +1,71 @@
+﻿@using PR043_2018_Web_projekat.Models;
+@{
+    ViewBag.Title = "AddAccommodation";
+    User u = (User)(Session["user"]);
+}
+
+@if (u != null && u.Role == Role.MANAGER)
+{
+    <h1 align="center" style="color: #CC527A; font-family:Calibri; font-size: 20px; font-weight:bold"> Add accommodation</h1>
+    <br />
+
+    <form method="post" action="\Manager\AddAccommodation">
+        <table class="userTable" style="border: 2px solid #474747; width:500px" align="center">
+            <tr>
+                <th style="width:150px">Name :</th>
+                <td><input type="text" name="name" style="width:100%" required/></td>
+            </tr>
+            <tr>
+                <th style="width:150px">Accomodation type :</th>
+                <td>
+                    <select name="accommodationType" style="width:98%" required>
+                        <option value="HOTEL">Hotel</option>
+                        <option value="MOTEL">Motel</option>
+                        <option value="VILLA">Villa</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <th style="width:150px">Hotel stars :</th>
+                <td>
+                    <input type="radio" name="stars" value="1"><label> 1 </label>
+                    <input type="radio" name="stars" value="2"><label> 2 </label>
+                    <input type="radio" name="stars" value="3"><label> 3 </label>
+                    <input type="radio" name="stars" value="4"><label> 4 </label>
+                    <input type="radio" name="stars" value="5"><label> 5 </label>
+                </td>
+            </tr>
+            <tr>
+                <th>Pool : &nbsp &nbsp</th>
+                <td>
+                    <input type="radio" name="pool" value="True"><label> Yes </label>
+                    <input type="radio" name="pool" value="False"><label> No </label>
+                </td>
+            </tr>
+            <tr>
+                <th>Spa :  &nbsp &nbsp</th>
+                <td>
+                    <input type="radio" name="spa" value="True"><label> Yes </label>
+                    <input type="radio" name="spa" value="False"><label> No </label>
+                </td>
+            </tr>
+            <tr>
+                <th>Handicap friendly :</th>
+                <td>
+                    <input type="radio" name="handicapFriendly" value="True"><label> Yes </label>
+                    <input type="radio" name="handicapFriendly" value="False"><label> No </label>
+                </td>
+            </tr>
+            <tr>
+                <th>Wi-Fi :  &nbsp &nbsp</th>
+                <td>
+                    <input type="radio" name="wiFi" value="True"><label> Yes </label>
+                    <input type="radio" name="wiFi" value="False"><label> No </label>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2"><input type="submit" value="Add" name="addButton" style="width:100%; background-color: #A8A7A7; color:#E8175D"/></td>
+            </tr>
+        </table>
+    </form>
+}

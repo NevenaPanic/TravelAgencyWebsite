@@ -1,0 +1,53 @@
+﻿@using PR043_2018_Web_projekat.Models;
+@{
+    ViewBag.Title = "Reservations";
+    User user = (User)Session["user"];
+    int num = 1;
+}
+
+@if (user != null && user.Role == Role.TOURIST)
+{
+    <h2 style="text-align:center">My reservations</h2>
+    <form method="post" action="\User\CancelReservation">
+        @foreach (Reservation reservation in Data.reservationsPerUser.Values)
+        {
+            if (reservation.PersonReserving.Username.Equals(user.Username))
+            {
+                <div>
+                    <table class="userTable">
+                        <tr>
+                            <th colspan="7" style="text-align:center;"> RESERVATION #@num</th>
+                        </tr>
+                        <tr>
+                            <th>Reservation ID:</th>
+                            <th>Status:</th>
+                            <td>Arrangment name:</td>
+                            <td>Date of trip:</td>
+                            <td>Accommodation name:</td>
+                            <td> Accommodation Unit #: </td>
+                            <td> Cancel reservation:</td>
+                        </tr>
+                        <tr>
+                            <th>@reservation.ReservationID</th>
+                            <th>@reservation.Status</th>
+                            <td>@reservation.SelectedArrangement.Name</td>
+                            <td>@reservation.SelectedArrangement.StartDate.ToString("dd/MM/yyyy") - @reservation.SelectedArrangement.EndDate.ToString("dd/MM/yyyy")</td>
+                            <td>@reservation.SelectedArrangement.Accommodation.Type  @reservation.SelectedArrangement.Accommodation.Name</td>
+                            <td> @reservation.SelectedArrangement.Accommodation.AllUnits.IndexOf(reservation.AccommodationUnit)</td>
+                            @if (reservation.Status == ReservationStatus.ACTIVE && reservation.SelectedArrangement.StartDate > DateTime.Now)
+                            {
+                                <td>
+                                    <button style="text-align:center; width:100%;  background-color:#E8175D; color:#363636;  margin-right:15px; border-radius: 10px" type="submit" name="cancel" value="@reservation.ReservationID">Cancel</button>
+                                </td>
+                            }
+                        </tr>
+                    </table>
+                @{ num++; }
+                </div>
+                <br />
+            }
+    }
+    </form>
+
+}
+

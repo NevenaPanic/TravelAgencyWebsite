@@ -1,0 +1,3 @@
+0;True;Bilo nam je odlicno :D;5;buda;1
+1;True;Bilo nam je sjajno! :D;5;buda;1
+2;False;Neki da odobrite..;2;buda;1

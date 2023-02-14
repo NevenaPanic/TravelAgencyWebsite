@@ -1,0 +1,44 @@
+﻿@{
+    ViewBag.Title = "LogIn";
+}
+
+@using PR043_2018_Web_projekat.Models;
+
+<!DOCTYPE html>
+
+@{
+    User u = (User)(Session["user"]);
+}
+
+@if (u == null)
+{
+    <h1 align="center" style="color: #CC527A">LogIn</h1>
+    <br />
+    if(!string.IsNullOrEmpty(ViewBag.LoginError))
+    {
+        <p style="text-align:center; font-weight:bold; color:red">@ViewBag.LoginError</p>
+    }
+    <br />
+    <div style="margin:auto; width: 300px">
+        <form method="post" action="\User\LogIn">
+            <table class="formStyle" style="border: 4px solid #CC527A; padding: 15px 15px 15px 15px">
+                <tr>
+                    <th style="width: 150px; color: #CC527A; align-content:center">Username: </th>
+                    <td><input type="text" name="username" required /></td>
+                </tr>
+                <tr>
+                    <th style="color: #CC527A; align-content:center">Password: </th>
+                    <td><input type="password" name="password" required/></td>
+                </tr>
+                <tr><td><br /></td></tr>
+                <tr>
+                    <td colspan="2" align="center"><input type="submit" value="LogIn" style="background-color: #474747; color: #CC527A; width: 150px; font-weight:bold" /></td>
+                </tr>
+            </table>
+        </form>
+    </div>
+}
+else
+{
+    <h1 align="center" style="color: #CC527A">You are already Logged in!!</h1>
+}

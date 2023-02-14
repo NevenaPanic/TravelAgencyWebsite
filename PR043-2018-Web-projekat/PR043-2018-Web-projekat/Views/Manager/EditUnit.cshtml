@@ -1,0 +1,60 @@
+﻿@using PR043_2018_Web_projekat.Models;
+@{
+    ViewBag.Title = "EditUnit";
+    User u = (User)Session["user"];
+    int editedAccommodation = ViewBag.editedAccommodation;
+    int editedUnit = ViewBag.editedUnit;
+}
+
+@if (u != null && u.Role == Role.MANAGER)
+{
+    <h1 align="center" style="color: #CC527A; font-family:Calibri">Edit Unit</h1>
+    <br />
+    <form method="post" action="\Manager\EditUnit">
+        <table style="width:30%; border: 3px solid #CC527A; border-radius:10px; background-color: #474747; color:#E8175D; margin:auto; font-weight:bold; font-size:18px; text-align:center;">
+            <tr>
+                <th colspan="2" style="text-align:center"> Add unit </th>
+            </tr>
+            <tr>
+                <td> Pets allowed :</td>
+                <td>
+                    @if (Data.accommodations[editedAccommodation].AllUnits[editedUnit].PetsAllowed)
+                    {
+                        <input type="radio" name="pets" value="True" checked="checked"><label> Yes </label>
+                        <input type="radio" name="pets" value="False"><label> No </label>
+                    }
+                    else
+                    {
+                        <input type="radio" name="pets" value="True"><label> Yes </label>
+                        <input type="radio" name="pets" value="False" checked="checked"><label> No </label>
+                    }
+                </td>
+            </tr>
+            <tr>
+                <td> Price :</td>
+                <td><input type="number" name="price" value="@Data.accommodations[editedAccommodation].AllUnits[editedUnit].PriceForUnit"></td>
+            </tr>
+            @if (Data.accommodations[editedAccommodation].AllUnits[editedUnit].Booked)
+            {
+                <tr>
+                    <td> Number of guests :</td>
+                    <td><input type="number" name="guests" value="@Data.accommodations[editedAccommodation].AllUnits[editedUnit].NumberOfGuests" readonly></td>
+                </tr>
+            }
+            else
+            {
+                <tr>
+                    <td> Number of guests :</td>
+                    <td><input type="number" name="guests" value="@Data.accommodations[editedAccommodation].AllUnits[editedUnit].NumberOfGuests"></td>
+                </tr>
+            }
+            <tr><td colspan="2">&nbsp</td></tr>
+            <tr>
+                <td colspan="2">
+                    <input type="submit" value="Edit unit" style="width: 50%; background-color:#A8A7A7; color:#E8175D" />
+                </td>
+            </tr>
+        </table>
+    </form>
+}
+

@@ -1,0 +1,86 @@
+﻿@using PR043_2018_Web_projekat.Models;
+@{
+    ViewBag.Title = "Arrangements";
+    Manager manager = (Manager)(Session["user"]);
+    TimeSpan days;
+}
+
+@if (manager != null && manager.Role == Role.MANAGER)
+{
+    <h1 align="center" style="color: #CC527A; font-family:Calibri">My arrangements</h1>
+    <br />
+
+    <p style="font-weight:bold; font-size:20px; width: 100%; text-align:center">
+        <a href="\Manager\AddArrangement" style=" color: #E8175D; text-decoration:none"> + Add arrangement </a>
+    </p>
+    <div style="width: 95%;  border: 3px solid #E8175D; margin-left: 15px">
+        <br />
+            @foreach (Arrangement arrangement in manager.CreatedArrangements)
+            {
+                if(!arrangement.Deleted)
+                { 
+                <div style="margin:auto; height:150px; width: 95%; text-align:center; background-color:#474747; color: #A8A7A7; border: 1px solid #CC527A">
+                    <div class="arragementItem" style="margin-left:10px; width:150px">
+                        Start date:<br />
+                        @arrangement.StartDate.ToString("dd/MM/yyyy")<br />
+                        End date:<br />
+                        @arrangement.EndDate.ToString("dd/MM/yyyy")<br />
+                        Days:
+                        @{ days = arrangement.EndDate - arrangement.StartDate;}
+                        @days.TotalDays
+                    </div>
+                    <div class="arragementItem" style="padding-top: 5px; width:120px">
+                        <img src="~/Images/@arrangement.Image" style="border-radius:100%; width:115px; height:115px; margin:auto" />
+                    </div>
+                    <div class="arragementItem" style="width:150px">
+                        @arrangement.Name<br />
+                        Prices from:
+                        @{ double price = arrangement.Accommodation.AllUnits[0].PriceForUnit * days.TotalDays;}
+                        @price €
+                    </div>
+                    <div class="arragementItem" style="width:150px">
+                        Type: @arrangement.Type.ToString().Replace('_', ' ');<br />
+                        Accommodation: @arrangement.Accommodation.Name
+                    </div>
+                    <div class="arragementItem" style="width:150px">
+                        Transporation: @arrangement.Transportation.ToString().Replace('_', ' ')<br />
+                        Max passengers: @arrangement.MaxPassengers
+                    </div>
+                    <div class="arragementItem" style="width:150px">
+                        Meeting spot: @arrangement.MeetingSpot.Address<br />
+                        Meeting time: @arrangement.MeetingTime<br />
+                    </div>
+                    <div class="arragementItem" style="float:right; width:150px">
+                        <a href="\Manager\EditArrangement?id=@arrangement.Id" style="color:#CC527A; text-decoration:none; font-weight:bold; margin:auto; text-align:center;">
+                            <div style="width:120px; float:right; border: 1px solid #CC527A; border-radius:5px; margin-right:20px; padding:3px; text-align:center" class="MyButton">
+                                Edit
+                            </div>
+                        </a>
+                        <br />
+                        @{
+                            bool exists = false;
+                            foreach (Reservation res in Data.reservationsPerUser.Values)
+                            {
+                                if (res.SelectedArrangement.Id == arrangement.Id && res.Status == ReservationStatus.ACTIVE && res.SelectedArrangement.StartDate > DateTime.Now)
+                                {
+                                    exists = true;
+                                }
+                            }
+
+                         }
+                        @if (!exists)
+                        {
+                            <a href="\Manager\DeleteArrangement?id=@arrangement.Id" style="color:#CC527A; text-decoration:none; font-weight:bold; margin:auto; text-align:center;">
+                                <div style="width:120px; float:right; border: 1px solid #CC527A; border-radius:5px; margin-right:20px; padding:3px; text-align:center" class="MyButton">
+                                    Delete
+                                </div>
+                            </a>
+                        }
+                    </div>
+                </div>
+                <br />
+                }
+            }
+        <br />
+    </div>
+}

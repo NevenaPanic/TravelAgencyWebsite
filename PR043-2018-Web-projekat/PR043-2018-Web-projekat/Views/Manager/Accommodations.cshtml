@@ -1,0 +1,198 @@
+﻿@using PR043_2018_Web_projekat.Models;
+@{
+    ViewBag.Title = "Accommodations";
+    User u = (User)(Session["user"]);
+    int index = 0;
+    List<Accommodation> accommodations = ViewBag.Accommodations;
+}
+
+<!DOCTYPE html>
+
+@if (u != null && u.Role == Role.MANAGER)
+{
+    <h1 align="center" style="color: #E8175D; font-family:Calibri">Accommodations
+    <img src="~/Images/home_icon2.png" style="width:50px; height:50px; background-color:#E8175D; border-radius:10px; vertical-align:middle"/>
+    </h1>
+    <br />
+    
+    <div style="width:60%; float:left">
+        <a href="\Manager\AddAccommodation" style=" color: #E8175D; text-decoration:none">
+            <div style="font-weight:bold; font-size:20px; width: 65%; text-align:center; border: 1px solid #E8175D; border-radius:10px; margin-left: 160px; background-color:#474747">
+                + Add accommodation
+            </div>
+        </a>
+        <br />
+        @foreach (Accommodation a in accommodations)
+        {
+            if (!a.Deleted)
+            {
+                <table style="border: 3px solid #CC527A; background-color: #474747; color:#E8175D; width: 600px; height:200px; margin:auto; font-weight:bold; font-size:18px; text-align:left; border-radius:10px; vertical-align:middle">
+
+                    <tr>
+                        <td style="text-align:right"><img src="~/Images/hotel.png" style="width:75px; height:75px; text-align:right" /></td>
+                        <td style="text-align:left">@a.Type @a.Name</td>
+                        @if (a.Type == AccomodationType.HOTEL)
+                        {
+                            <td style="text-align:center">
+                                <div style="width: 150px; float:right; margin:auto; padding: 20px">
+                                    @for (int i = 1; i <= a.Stars; i++)
+                                    {
+                                        <img src="~/Images/star.png" style="max-height: 25px; max-width: 25px; float: right" />
+                                    }
+                                </div>
+                            </td>
+                        }
+                        else
+                        {
+                            <td>&nbsp;</td>
+                        }
+                    </tr>
+                    <tr style="height:40px">
+                        <td style="text-align:right; vertical-align:middle"><img src="~/Images/pool.png" style="width:50px; height:50px" />&nbsp; : @(a.Pool ? "Yes" : "No")</td>
+                        <td style="text-align:right; vertical-align:middle"><img src="~/Images/spa.png" style="width:50px; height:50px" />&nbsp; : @(a.Spa ? "Yes" : "No")</td>
+                        <td>
+                            <a href="\Manager\AccommodationEdit?id=@Data.accommodations.IndexOf(a)" style="color:#CC527A; text-decoration:none; font-weight:bold; margin:auto; text-align:center;">
+                                <div style="width:120px; float:right; border: 1px solid #CC527A; border-radius:5px; margin-right:20px; padding:3px; text-align:center" class="MyButton">
+                                    Edit
+                                </div>
+                            </a>
+                        </td>
+                    </tr>
+                    <tr style="height:40px">
+                        <td style="text-align:right; vertical-align:middle"><img src="~/Images/disability.png" style="width:50px; height:50px" />&nbsp; : @(a.HandicapFriendly ? "Yes" : "No")</td>
+                        <td style="text-align:right; vertical-align:middle"><img src="~/Images/wifi.png" style="width:50px; height:50px" />&nbsp; : @(a.WiFi ? "Yes" : "No")</td>
+                        @if (Data.accommodations[Data.accommodations.IndexOf(a)].Id == -1)
+                        {
+                            <td>
+                                <a href="\Manager\AccommodationDelete?id=@Data.accommodations.IndexOf(a)" style="color:#CC527A; text-decoration:none; font-weight:bold; margin:auto; text-align:center">
+                                    <div style="width:120px; float:right; border: 1px solid #CC527A; border-radius:5px; margin-right:20px; padding:3px; text-align:center" class="MyButton">
+                                        Delete
+                                    </div>
+                                </a>
+                            </td>
+                            }
+                            else if (Data.arrangements[Data.accommodations[Data.accommodations.IndexOf(a)].Id].StartDate < DateTime.Now)
+                        {
+                            <td>
+                                <a href="\Manager\AccommodationDelete?id=@Data.accommodations.IndexOf(a)" style="color:#CC527A; text-decoration:none; font-weight:bold; margin:auto; text-align:center">
+                                    <div style="width:120px; float:right; border: 1px solid #CC527A; border-radius:5px; margin-right:20px; padding:3px; text-align:center" class="MyButton">
+                                        Delete
+                                    </div>
+                                </a>
+                            </td>
+                        }
+                        else
+                        {
+                            <td>&nbsp;</td>
+                        }
+                    </tr>
+                    <tr style="height:40px">
+                        <td colspan="2">&nbsp;</td>
+                        <td>
+                            <a href="\Manager\AccommodationDetails?id=@Data.accommodations.IndexOf(a)" style="color:#CC527A; text-decoration:none; font-weight:bold; margin:auto; text-align:center">
+                                <div style="width:120px; float:right; border: 1px solid #CC527A; border-radius:5px; margin-right:20px; padding:3px; text-align:center" class="MyButton">
+                                    More details
+                                </div>
+                            </a>
+                        </td>
+                    </tr>
+                </table>
+                <br />
+            }
+            index++;
+        }
+    </div>
+
+    <div style="width:30%; float:right; margin-right:80px">
+        <!-- Sort -->
+        <div style="border: 3px solid #474747; background-color: #E8175D; color:#A8A7A7; width: 450px; margin:auto; font-weight:bold; font-size:18px; text-align:center; border-radius:10px">
+            <form method="post" action="~/Manager/SortAccommodations">
+                <table style="width:100%">
+                    <tr>
+                        <th>Sort by:</th>
+                    </tr>
+                    <tr>
+                        <td>
+                            <input type="radio" name="type" value="name"><label> Name </label>
+                            <input type="radio" name="type" value="total"><label> Total number of units </label>
+                            <input type="radio" name="type" value="free"><label> Free number of units </label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Sort in order:</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <input type="radio" name="order" value="asc"><label> Ascending </label>
+                            <input type="radio" name="order" value="dsc"><label> Descending </label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <input type="submit" name="sort" value="Sort" style="width:50%" />
+                        </td>
+                    </tr>
+                </table>
+            </form>
+        </div>
+
+        <br/><br />
+        <!-- Search -->
+        <div style="border: 3px solid #474747; background-color: #E8175D; color:#A8A7A7; width: 450px; margin:auto; font-weight:bold; font-size:18px; text-align:center; border-radius:10px">
+            <form method="post" action="~/Manager/SearchAccommodations">
+                <table style="width:100%">
+                    <tr>
+                        <th> Type: </th>
+                        <td>
+                            <select name="type" style="width:100%">
+                                <option value="">None</option>
+                                <option value="HOTEL">@AccomodationType.HOTEL</option>
+                                <option value="MOTEL">@AccomodationType.MOTEL</option>
+                                <option value="VILLA">@AccomodationType.VILLA</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th> Name: </th>
+                        <td><input type="text" name="name" placeholder="Name" style="width:97%"/></td>
+                    </tr>
+                    <tr>
+                        <th> Has pool: </th>
+                        <td>
+                            <input type="radio" name="pool" value="True"><label> Yes </label>
+                            <input type="radio" name="pool" value="False"><label> No </label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th> Has spa: </th>
+                        <td>
+                            <input type="radio" name="spa" value="True"><label> Yes </label>
+                            <input type="radio" name="spa" value="False"><label> No </label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th> Has Wi-Fi: </th>
+                        <td>
+                            <input type="radio" name="wiFi" value="True"><label> Yes </label>
+                            <input type="radio" name="wiFi" value="False"><label> No </label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th> Handicap accessible: </th>
+                        <td>
+                            <input type="radio" name="handicap" value="True"><label> Yes </label>
+                            <input type="radio" name="handicap" value="False"><label> No </label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2"><input type="submit" value="Search" name="search"/></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2"><input type="submit" value="Show all" name="search"/></td>
+                    </tr>
+                </table>
+            </form>
+        </div>
+    </div>
+}
+

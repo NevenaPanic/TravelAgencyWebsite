@@ -1,0 +1,3 @@
+manager;manager;Manager;Manager;FEMALE;6/9/1990;manager@gmail.com
+jovana;jovana;Jovana;Jovanovic;FEMALE;21/1/1994;joca_gomboca@gmail.com
+novi;novi;novi;novi;FEMALE;2/3/2020;novi@gmail.com

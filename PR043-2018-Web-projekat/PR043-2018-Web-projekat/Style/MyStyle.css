@@ -1,0 +1,94 @@
+﻿body {
+    margin: 0px;
+    width: auto;
+    background-color: #363636;
+    overflow-y: scroll;
+    font-family: Calibri;
+}
+
+input, select {
+    border-color: #CC527A;
+    border-width: 1px;
+}
+
+formStyle {
+    border: 3px solid #CC527A;
+    width: 300px;
+    align-self: center;
+}
+
+.topnav {
+    background-color: #474747;
+    overflow: hidden;
+    margin-top: 0px;
+    width: auto;
+    font-family: Calibri;
+}
+
+    .topnav a {
+        float: left;
+        color: #CC527A;
+        text-align: center;
+        padding: 14px 16px;
+        text-decoration: none;
+        font-size: 17px;
+    }
+
+        .topnav a:hover {
+            background-color: #A8A7A7;
+            color: black;
+        }
+
+        .topnav a.active {
+            background-color: #E8175D;
+            color: white;
+        }
+
+.userTable{
+    width: 98%;
+    border-collapse: collapse;
+    border: 2px solid #A8A7A7;
+}
+
+    .userTable tr:nth-child(odd) {
+        background-color: #474747;
+        color: #A8A7A7;
+    }
+
+    .userTable tr:nth-child(even) {
+        background-color: #363636;
+        color: #A8A7A7;
+    }
+
+    .userTable tr th:nth-child(odd) {
+        text-align: right
+    }
+
+    .userTable tr td:nth-child(even) {
+        text-align: left
+    }
+
+.MyButton:hover {
+    background-color: #363636;
+}
+
+.map {
+    height: 400px;
+    width: 420px;
+}
+
+.arragementItem {
+
+    float: left;
+    margin: 10px;
+    width: 100px;
+    text-align:center;
+    vertical-align:middle;
+    padding-top: 30px;
+    color: azure;
+}
+
+.sameInput {
+    width:100%;
+    box-sizing:border-box;
+}

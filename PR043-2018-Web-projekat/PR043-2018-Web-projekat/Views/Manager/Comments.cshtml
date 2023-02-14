@@ -1,0 +1,34 @@
+﻿@using PR043_2018_Web_projekat.Models;
+@{
+    ViewBag.Title = "Comments";
+    Manager user = Session["user"] as Manager;
+}
+
+@if (user != null && user.Role == Role.MANAGER)
+{
+    <h1 align="center" style="color: #CC527A; font-family:Calibri"> Comments </h1>
+    <form method="post" action="\Manager\ApproveComment">
+        <table class="userTable">
+                <tr>
+                    <td>Tourist: </td>
+                    <td> State: </td>
+                    <td> Arrangment: </td>
+                    <td> Comment text: </td>
+                    <td> Grade: </td>
+                    <td> Approve: </td>
+                </tr>
+            @foreach (Comment comment in Data.comments.FindAll(x => x.CommentedArrangement.ManagerID == user.Username))
+            {
+                <tr>
+                    <td> @comment.Commentator.Name @comment.Commentator.Lastname </td>
+                    <td> @(comment.Approved ? "Yes" : "No")</td>
+                    <td> @comment.CommentedArrangement.Name </td>
+                    <td> @comment.CommentText</td>
+                    <td> @comment.Grade</td>
+                    <td><button type="submit" value="@comment.Id" name="id" class="sameInput"> Approve</button></td>
+                </tr>
+            }
+        </table>
+    </form>
+}
+

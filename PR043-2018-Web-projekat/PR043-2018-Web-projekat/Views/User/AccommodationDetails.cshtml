@@ -1,0 +1,144 @@
+﻿@using PR043_2018_Web_projekat.Models;
+@{
+    ViewBag.Title = "AccommodationDetails";
+    Accommodation accommodation = ViewBag.accommodation;
+    User user = (User)Session["user"];
+}
+
+<!-- Pregled smestaja za korisnika-->
+<h1 align="center" style="color: #CC527A; font-family:Calibri"> Accommodation details</h1>
+<table style="border: 3px solid #CC527A; border-radius:10px; background-color: #474747; color:#E8175D; width: 40%; margin:0px 0px 20px 100px; font-weight:bold; font-size:18px; text-align:center; float:left;">
+    <tr>
+        <td>
+            <img src="~/Images/hotel.png" style="width:75px; height:75px; text-align:right" />
+        </td>
+        <td style="text-align:left">
+            @ViewBag.accommodation.Type @ViewBag.accommodation.Name
+        </td>
+        @if (ViewBag.accommodation.Type == AccomodationType.HOTEL)
+        {
+            <td style="text-align:center">
+                @for (int i = 1; i <= ViewBag.accommodation.Stars; i++)
+                {
+                    <img src="~/Images/star.png" style="max-height: 25px; max-width: 25px; float: left" />
+                }
+            </td>
+        }
+        else
+        {
+            <td>&nbsp</td>
+        }
+    </tr>
+    <tr>
+        <td style="text-align:right; vertical-align:middle"><img src="~/Images/pool.png" style="width:50px; height:50px" />&nbsp; : @(ViewBag.accommodation.Pool ? "Yes" : "No")</td>
+        <td style="text-align:right; vertical-align:middle"><img src="~/Images/spa.png" style="width:50px; height:50px" />&nbsp; : @(ViewBag.accommodation.Spa ? "Yes" : "No")</td>
+        <td>&nbsp</td>
+    </tr>
+    <tr>
+        <td>&nbsp</td>
+    </tr>
+    <tr>
+        <td style="text-align:right; vertical-align:middle"><img src="~/Images/disability.png" style="width:50px; height:50px" />&nbsp; : @(ViewBag.accommodation.HandicapFriendly ? "Yes" : "No")</td>
+        <td style="text-align:right; vertical-align:middle"><img src="~/Images/wifi.png" style="width:50px; height:50px" />&nbsp; : @(ViewBag.accommodation.WiFi ? "Yes" : "No")</td>
+        <td>&nbsp</td>
+    </tr>
+    <tr><td colspan="3">&nbsp;</td></tr>
+</table>
+<br />
+
+<!-- Sort and search units -->
+<div style="width:40%; float:right">
+    <!-- Search -->
+    <div>
+        <form method="get" action="\User\SearchUnits">
+            <table style="width:70%; text-align:center" class="userTable">
+                <tr><td colspan="4" style="color:#E8175D"> Search </td></tr>
+                <tr><td colspan="4"> Number of guests: </td></tr>
+                <tr>
+                    <td>Min:</td>
+                    <td><input name="minGuests" type="number" class="sameInput" min="1"/></td>
+                    <td>Max:</td>
+                    <td><input name="maxGuests" type="number" class="sameInput" min="1"/></td>
+                </tr>
+                <tr><td colspan="4"> Pets allowed :</td></tr>
+                <tr>
+                    <td colspan="2"><input type="radio" name="pets" value="True" /><label> Yes </label></td>
+                    <td colspan="2"><input type="radio" name="pets" value="False" /><label> No </label></td>
+                </tr>
+                <tr><td colspan="4"> Price of unit: </td></tr>
+                <tr>
+                    <td>Min:</td>
+                    <td><input name="minPrice" type="number" class="sameInput" min="1"/></td>
+                    <td>Max:</td>
+                    <td><input name="maxPrice" type="number" class="sameInput" min="1"/></td>
+                </tr>
+                <tr><td colspan="4">&nbsp;</td></tr>
+                <tr><td colspan="4"><input name="search" type="submit" value="Search" class="sameInput"/></td></tr>
+                <tr><td colspan="4"><input name="search" type="submit" value="Show all"  class="sameInput"/></td></tr>
+            </table>
+        </form>
+    </div>
+    <br />
+    <div>
+        <form method="get" action="\User\SorthUnits">
+            <table style="width:70%; text-align:center" class="userTable">
+                <tr><td colspan="4" style="color:#E8175D"> Sort </td></tr>
+                <tr>
+                    <td> By :</td>
+                    <td colspan="3">
+                        <select name="sortType" class="sameInput">
+                            <option value="guests"> Number of guests </option>
+                            <option value="price"> Price </option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2"><input type="radio" name="way" value="asc" checked="checked" /><label> Ascending </label></td>
+                    <td colspan="2"><input type="radio" name="way" value="dsc" /><label> Descending </label></td>
+                </tr>
+                <tr><td colspan="4">&nbsp;</td></tr>
+                <tr><td colspan="4"><input name="sort" type="submit" value="Sort" class="sameInput" /></td></tr>
+            </table>
+        </form>
+    </div>
+</div>
+
+<div style="margin:auto; width:60%; float:left">
+    <br /><br />
+    <h1 align="center" style="color: #CC527A; font-family:Calibri">All units :</h1>
+    <form method="post" action="\User\Reserve">
+        @foreach (AccommodationUnit unit in ViewBag.units)
+        {
+            if (!unit.Deleted)
+            {
+                string id = unit.Id + "_" + ViewBag.accommodation.AllUnits.IndexOf(unit);
+                <table style="width:40%; border: 3px solid #CC527A; border-radius:10px; background-color: #474747; color:#E8175D; margin:auto; font-weight:bold; font-size:18px; text-align:left;">
+                    <tr>
+                        <td style="text-align:right"><img src="~/Images/pawprint.png" style="width: 40px; height:40px" /></td>
+                        <td style="text-align:left">&nbsp; : @(unit.PetsAllowed ? " Yes " : " No ")</td>
+                        <td style="text-align:right"><img src="~/Images/bed.png" style="width: 40px; height:40px" /></td>
+                        <td style="text-align:left">&nbsp : @unit.NumberOfGuests</td>
+                    </tr>
+                    <tr>
+                        <td>&nbsp</td>
+                        <td style="text-align:left"> Price &euro;: @unit.PriceForUnit</td>
+                        <td>&nbsp</td>
+                        <td style="text-align:left"> Reserved : @(unit.Booked ? " Yes " : " No ")</td>
+                    </tr>
+                    @if (user != null && user.Role == Role.TOURIST && unit.Booked == false)
+                    {
+                        <tr style="text-align:center">
+                            <td colspan="4">
+                                @{ string identificator = Data.accommodations.IndexOf(accommodation) + "_" + Data.accommodations[Data.accommodations.IndexOf(accommodation)].AllUnits.IndexOf(unit); }
+                                <button style="text-align:center; width:100px;  background-color:#E8175D; color:#363636; float:right; margin-right:15px; border-radius: 10px" type="submit" name="reserve" value="@identificator">Reserve</button>
+                            </td>
+                        </tr>
+                    }
+                </table>
+                <br />
+            }
+        }
+    </form>
+</div>
+
+

@@ -1,0 +1,220 @@
+﻿@using PR043_2018_Web_projekat.Models;
+@{
+
+    ViewBag.Title = "EditArrangement";
+    User user = (User)Session["user"];
+    Arrangement a = ViewBag.editedArrangement;
+}
+
+@if (user != null && user.Role == Role.MANAGER)
+{
+    <script src="~/Scripts/OpenLayers/ol.js"></script>
+    <link rel="stylesheet" href="~/Scripts/OpenLayers/ol.css" />
+    <h1 align="center" style="color: #CC527A; font-family:Calibri; font-size: 25px; font-weight:bold"> Add arrangement</h1>
+    <br />
+    if (!string.IsNullOrEmpty(ViewBag.AddArrangementError))
+    {
+        <h2 style="text-align:center; color: firebrick">@ViewBag.EditArrangementError</h2>
+    }
+    <form method="post" action="\Manager\EditArrangement" enctype="multipart/form-data">
+        <table class="userTable" style="border: 2px solid #474747; width:600px; text-align:center" align="center">
+            <tr>
+                <th> Name: </th>
+                <td colspan="2"><input name="name" type="text" value="@a.Name" style="width:98%; text-align:center" required /></td>
+            </tr>
+            <tr>
+                <th> Type of arrangment: </th>
+                <td colspan="2">
+                    <select name="type" style="width:100%" required>
+                        @foreach (ArrangmentType type in (ArrangmentType[])Enum.GetValues(typeof(ArrangmentType)))
+                        {
+                            if (type == a.Type)
+                            {
+                                <option value="@type" selected> @type.ToString().Replace('_', ' ')</option>
+                            }
+                            else
+                            {
+                                <option value="@type"> @type.ToString().Replace('_', ' ')</option>
+                            }
+                        }
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <th> Type of transportation: </th>
+                <td colspan="2">
+                    <select name="transoprtation" style="width:100%" required>
+                        @foreach (TransportationType type in (TransportationType[])Enum.GetValues(typeof(TransportationType)))
+                        {
+                            if (type == a.Transportation)
+                            {
+                                <option value="@type" selected> @type.ToString().Replace('_', ' ')</option>
+                            }
+                            else
+                            {
+                                <option value="@type"> @type.ToString().Replace('_', ' ')</option>
+                            }
+                        }
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <th>&nbsp</th>
+                <th> Start date: </th>
+                <th> End date: </th>
+            </tr>
+            <tr>
+                <th>&nbsp</th>
+                <td><input type="date" name="startDate" style="width:98%; text-align:center" value="@a.StartDate.ToString("yyyy-MM-dd")" required /></td>
+                <td><input type="date" name="endDate" style="width:98%; text-align:center" value="@a.EndDate.ToString("yyyy-MM-dd")" required /></td>
+            </tr>
+            <tr>
+                <th style="text-align:left">
+                    <input type="radio" name="location" id="trip" checked="checked" /><label style="color:lightblue"> Choose Trip Location </label>
+                    <input type="radio" name="location" id="meet" /><label style="color:lavender"> Choose Meeting Place</label>
+                </th>
+                <td colspan="2">
+                    <div id="map" class="map">
+                        <script type="text/javascript">
+                            var map = new ol.Map({
+                                target: 'map',
+                                layers: [
+                                    new ol.layer.Tile({
+                                        source: new ol.source.OSM()
+                                    })
+                                ],
+                                view: new ol.View({
+                                    center: ol.proj.fromLonLat([19.8302, 45.2641]),
+                                    zoom: 8
+                                })
+                            });
+
+                            function reverseGeocode(coords) {
+                                fetch('http://nominatim.openstreetmap.org/reverse?format=json&lon=' + coords[0] + '&lat=' + coords[1])
+                                    .then(function (response) {
+                                        return response.json();
+                                    }).then(function (json) {
+                                        if (checkMeet.checked)
+                                        {
+                                            document.getElementById("address").value = json.address.road + " " + json.address.house_number;
+                                            document.getElementById("city").value = json.address.city == undefined ? json.address.city_district : json.address.city;
+                                            document.getElementById("zipCode").value = json.address.postcode;
+                                        }
+                                        if (checkTrip.checked)
+                                        {
+                                            document.getElementById("destinationCity").value = json.address.city;
+                                            document.getElementById("destinationState").value = json.address.country;
+                                        }
+                                    });
+                            };
+
+                            map.on("click", function (e) {
+
+                                let clickedCoordinate = ol.proj.toLonLat(e.coordinate);
+
+                                checkMeet = document.getElementById("meet");
+                                checkTrip = document.getElementById("trip");
+
+                                if (checkMeet.checked)
+                                {
+                                    document.getElementById("lat").value =  clickedCoordinate[0];
+                                    document.getElementById("lon").value = clickedCoordinate[1];
+                                }
+                                reverseGeocode(clickedCoordinate);
+                            })
+                        </script>
+                    </div>
+                </td>
+            </tr>
+            <tr><th colspan="3">&nbsp</th></tr>
+            <tr style="background-color: lightblue; color: #363636; border-left: 2px solid lightblue; border-right: 2px solid lightblue;">
+                <th colspan="3" style="width:100%; text-align:center"> Trip location info: </th>
+            </tr>
+            <tr style="border-left: 2px solid lightblue; border-right: 2px solid lightblue;">
+                @{
+                    string[] locationParts = a.Location.Split(',');
+                 }
+                <th> &nbsp </th>
+                <td> City : </td>
+                <td> State/Region : </td>
+            </tr>
+            <tr style="border-left: 2px solid lightblue; border-right: 2px solid lightblue;">
+                <th> &nbsp </th>
+                <td><input type="text" id="destinationCity" name="destinationCity" value="@locationParts[0]" style="width:95%; text-align:center" /></td>
+                <td><input type="text" id="destinationState" name="destinationState" value="@locationParts[1]" style="width:95%; text-align:center" /></td>
+            </tr>
+            <tr style="border-top: 2px solid lightblue; border-bottom: 2px solid lavender"><th colspan="3">&nbsp</th></tr>
+            <tr>
+                <th colspan="3" style="width:100%; text-align:center; background-color: lavender; color: #363636; border-left: 2px solid lavender; border-right: 2px solid lavender;">
+                    Meeting place info:
+                </th>
+            </tr>
+            <tr style="border-left: 2px solid lavender; border-right: 2px solid lavender;">
+                @{
+                    string[] addressParts = a.MeetingSpot.Address.Split(',');
+                }
+                <th> Choosen coordinates: </th>
+                <td>LAT : <input type="text" id="lat" name="lat" style="width:95%; text-align:center" value="@a.MeetingSpot.Latitude" required readonly /></td>
+                <td>LONG: <input type="text" id="lon" name="lon" style="width:95%; text-align:center" value="@a.MeetingSpot.Longitude" required readonly /></td>
+            </tr>
+            <tr style="border-left: 2px solid lavender; border-right: 2px solid lavender;">
+                <th> Address: </th>
+                <th> City: </th>
+                <th> Zip code:</th>
+            </tr>
+            <tr style="border-left: 2px solid lavender; border-right: 2px solid lavender; border-bottom: 2px solid lavender">
+                <td><input type="text" id="address" name="address" style="width:95%; text-align:center" value="@addressParts[0]" required /></td>
+                <td><input type="text" id="city" name="city" style="width:95%; text-align:center" value="@addressParts[1]" required /></td>
+                <td><input type="text" id="zipCode" name="zipCode" style="width:95%; text-align:center" value="@addressParts[2]" required /></td>
+            </tr>
+            <tr><th colspan="3">&nbsp</th></tr>
+            <tr>
+                <th> Metting time: </th>
+                @{ 
+                    string[] timeParts = a.MeetingTime.Split(':');
+                }
+                <td><input type="number" name="hour" value="@timeParts[0]" style="width:95%; text-align:center" required /></td>
+                <td><input type="number" name="minutes" value="@timeParts[1]" style="width:95%; text-align:center" required /></td>
+            </tr>
+            <tr>
+                <th> Maximum passengers: </th>
+                <td colspan="2"><input type="number" name="passengers" style="width:98%; text-align:center" value="@a.MaxPassengers" required /></td>
+            </tr>
+            <tr>
+                <th> Arrangement description: </th>
+                <td colspan="2" valign="middle" align="center">
+                    <textarea rows="5" cols="2" name="description" style="width:98%; height:100%; margin:auto" required>@a.Description</textarea>
+                </td>
+            </tr>
+            <tr>
+                <th> Trip plan: </th>
+                <td colspan="2" valign="middle" align="center">
+                    <textarea rows="5" cols="2" name="plan" style="width:98%; height:100%; margin:auto" required>@a.TravelPlan</textarea>
+                </td>
+            </tr>
+            <tr>
+                <th> Poster: </th>
+                <td colspan="2"><input type="file" name="image" value="~\Images\@a.Image" style="width:100%" required /></td>
+            </tr>
+            <tr>
+                <th> Accommodation: </th>
+                <td colspan="2">
+                    <select name="accommodation" style="width:100%" required>
+                        @foreach (Accommodation acc in Data.accommodations.FindAll(x => x.Id == -1))
+                        {
+                            if (!a.Deleted)
+                            {
+                                <option value="@Data.accommodations.IndexOf(acc)"> @acc.Type @acc.Name </option>
+                            }
+                        }
+                    </select>
+                </td>
+            </tr>
+            <tr><td colspan="3"><input type="hidden" name="identificator" value="@ViewBag.ID"/></td></tr>
+            <tr>
+                <td colspan="3"><input type="submit" value="Edit arrangement" style="width:100%; background-color:#A8A7A7; color:#E8175D; font-weight:bold; height:25px" /></td>
+            </tr>
+        </table>
+        <br /><br /><br />
+    </form>
+}

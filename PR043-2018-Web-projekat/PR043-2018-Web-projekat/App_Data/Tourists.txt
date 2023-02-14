@@ -1,0 +1,8 @@
+tourist;tourist;Tourist;Tourist;FEMALE;29/6/1994;tourist@gmail.com;False;False;0
+stefan;stefan;Stefan;Stefanovic;MALE;31/7/1996;stefan@gmail.com;False;False;0
+milica;milica;Milica;Milicevic;FEMALE;6/7/2000;mica@yahoo.com;False;False;0
+ivan;ivan;Ivan;Ivanovic;MALE;25/8/2000;ivan@yahoo.com;False;False;0
+ana;ana;Ana;Antic;FEMALE;22/12/1997;ana@gmail.com;False;False;0
+branko;branko;Branko;Brankovic;MALE;22/2/1990;brane@gmail.com;True;True;2
+buda;buda;Buda;Budisavljevic;FEMALE;2/1/1993;buda@gmail.com;True;False;3
+neko;neko;neko;neko;FEMALE;28/6/2021;neko@neko.com;False;False;0

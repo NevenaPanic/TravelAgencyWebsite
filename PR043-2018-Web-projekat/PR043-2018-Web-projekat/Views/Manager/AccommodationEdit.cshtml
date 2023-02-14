@@ -1,0 +1,162 @@
+﻿@using PR043_2018_Web_projekat.Models;
+@{
+    ViewBag.Title = "AccommodationEdit";
+    User u = (User)Session["user"];
+    int indexAccommodation = ViewBag.editedAccommodation;
+}
+
+
+@if (u.Role == Role.MANAGER)
+{
+    <h1 align="center" style="color: #CC527A; font-family:Calibri; font-size: 20px; font-weight:bold"> Edit accommodation</h1>
+    <br />
+    <h2>@(ViewBag.EditAccommodationError == null ? "" : ViewBag.EditAccommodationError)</h2>
+    <form method="post" action="\Manager\AccommodationEdit">
+        <table class="userTable" style="border: 2px solid #474747; width:500px" align="center">
+            <tr>
+                <th style="width:150px">Name :</th>
+                <td><input type="text" name="name" style="width:95%" required value="@Data.accommodations[indexAccommodation].Name"/></td>
+            </tr>
+            <tr>
+                <th style="width:150px">Accomodation type :</th>
+                <td>
+                    <select name="accommodationType" style="width:95%" required>
+                        @switch (Data.accommodations[indexAccommodation].Type)
+                        {
+                            case AccomodationType.HOTEL:
+                                <option value="HOTEL">Hotel</option>
+                                <option value="MOTEL">Motel</option>
+                                <option value="VILLA">Villa</option>
+                                break;
+                            case AccomodationType.MOTEL:
+                                <option value="MOTEL">Motel</option>
+                                <option value="HOTEL">Hotel</option>
+                                <option value="VILLA">Villa</option>
+                                break;
+                            default:
+                                <option value="VILLA">Villa</option>
+                                <option value="HOTEL">Hotel</option>
+                                <option value="MOTEL">Motel</option>
+                                break;
+                        }
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <th style="width:150px">Hotel stars :</th>
+                <td>
+                    @switch (Data.accommodations[indexAccommodation].Stars)
+                    {
+                        case 1:
+                            <input type="radio" name="stars" value="1" checked="checked"/><label> 1 </label>
+                            <input type="radio" name="stars" value="2"/><label> 2 </label>
+                            <input type="radio" name="stars" value="3"/><label> 3 </label>
+                            <input type="radio" name="stars" value="4"/><label> 4 </label>
+                            <input type="radio" name="stars" value="5"/><label> 5 </label>
+                            break;
+                        case 2:
+                            <input type="radio" name="stars" value="1"/><label> 1 </label>
+                            <input type="radio" name="stars" value="2" checked="checked"/><label> 2 </label>
+                            <input type="radio" name="stars" value="3/"><label> 3 </label>
+                            <input type="radio" name="stars" value="4"/><label> 4 </label>
+                            <input type="radio" name="stars" value="5"/><label> 5 </label>
+                            break;
+                        case 3:
+                            <input type="radio" name="stars" value="1"/><label> 1 </label>
+                            <input type="radio" name="stars" value="2"/><label> 2 </label>
+                            <input type="radio" name="stars" value="3" checked="checked"/><label> 3 </label>
+                            <input type="radio" name="stars" value="4"/><label> 4 </label>
+                            <input type="radio" name="stars" value="5"/><label> 5 </label>
+                            break;
+                        case 4:
+                            <input type="radio" name="stars" value="1"/><label> 1 </label>
+                            <input type="radio" name="stars" value="2"/><label> 2 </label>
+                            <input type="radio" name="stars" value="3"/><label> 3 </label>
+                            <input type="radio" name="stars" value="4" checked="checked"/><label> 4 </label>
+                            <input type="radio" name="stars" value="5"/><label> 5 </label>
+                            break;
+                        case 5:
+                            <input type="radio" name="stars" value="1"/><label> 1 </label>
+                            <input type="radio" name="stars" value="2"/><label> 2 </label>
+                            <input type="radio" name="stars" value="3"/><label> 3 </label>
+                            <input type="radio" name="stars" value="4"/><label> 4 </label>
+                            <input type="radio" name="stars" value="5" checked="checked"/><label> 5 </label>
+                            break;
+                        default:
+                            <input type="radio" name="stars" value="1"/><label> 1 </label>
+                            <input type="radio" name="stars" value="2"/><label> 2 </label>
+                            <input type="radio" name="stars" value="3"/><label> 3 </label>
+                            <input type="radio" name="stars" value="4"/><label> 4 </label>
+                            <input type="radio" name="stars" value="5"/><label> 5 </label>
+                            <input type="radio" name="stars" value="" hidden checked="checked"/>
+                            break;
+                    }
+                </td>
+            </tr>
+            <tr>
+                <th>Pool : &nbsp &nbsp</th>
+                <td>
+                    @if (Data.accommodations[indexAccommodation].Pool)
+                    {
+                        <input type="radio" name="pool" value="True" checked="checked"><label> Yes </label>
+                        <input type="radio" name="pool" value="False"><label> No </label>
+                    }
+                    else
+                    {
+                        <input type="radio" name="pool" value="True"><label> Yes </label>
+                        <input type="radio" name="pool" value="False" checked="checked"><label> No </label>
+                    }
+                </td>
+            </tr>
+            <tr>
+                <th>Spa :  &nbsp &nbsp</th>
+                <td>
+                    @if (Data.accommodations[indexAccommodation].Spa)
+                    {
+                        <input type="radio" name="spa" value="True" checked="checked"><label> Yes </label>
+                        <input type="radio" name="spa" value="False"><label> No </label>
+                    }
+                    else
+                    {
+                        <input type="radio" name="spa" value="True"><label> Yes </label>
+                        <input type="radio" name="spa" value="False" checked="checked"><label> No </label>
+                    }
+                </td>
+            </tr>
+            <tr>
+                <th>Handicap friendly :</th>
+                <td>
+                    @if (Data.accommodations[indexAccommodation].HandicapFriendly)
+                    {
+                        <input type="radio" name="handicapFriendly" value="True" checked="checked"><label> Yes </label>
+                        <input type="radio" name="handicapFriendly" value="False"><label> No </label>
+                    }
+                    else
+                    {
+                        <input type="radio" name="handicapFriendly" value="True"><label> Yes </label>
+                        <input type="radio" name="handicapFriendly" value="False" checked="checked"><label> No </label>
+                    }
+                </td>
+            </tr>
+            <tr>
+                <th>Wi-Fi :  &nbsp &nbsp</th>
+                <td>
+                    @if (Data.accommodations[indexAccommodation].WiFi)
+                    {
+                        <input type="radio" name="wiFi" value="True" checked="checked"><label> Yes </label>
+                        <input type="radio" name="wiFi" value="False"><label> No </label>
+                    }
+                    else
+                    {
+                        <input type="radio" name="wiFi" value="True" checked="checked"><label> Yes </label>
+                        <input type="radio" name="wiFi" value="False"><label> No </label>
+                    }
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2"><input type="submit" value="Edit" name="editButton" style="width:100%; background-color: #A8A7A7; color:#E8175D" /></td>
+            </tr>
+        </table>
+    </form>
+}
+

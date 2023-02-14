@@ -1,0 +1,130 @@
+﻿@using PR043_2018_Web_projekat.Models;
+@{
+    ViewBag.Title = "ArrangementDetails";
+    Arrangement lookedUp = ViewBag.arrangementDetails;
+    User u = (User)Session["user"];
+}
+
+<h1 align="center" style="color: #CC527A; font-family:Calibri"> Details of @lookedUp.Name</h1>
+<script src="~/Scripts/OpenLayers/ol.js"></script>
+<link rel="stylesheet" href="~/Scripts/OpenLayers/ol.css" />
+
+<div style="width:55%; float:left">
+    <table style="width:70%; margin:auto" align="center" class="userTable">
+        <tr>
+            <th> Type of arrangement :</th>
+            <td> @lookedUp.Type.ToString().Replace('_', ' ') </td>
+        </tr>
+        <tr>
+            <th> Type of transportation :</th>
+            <td> @lookedUp.Transportation.ToString().Replace('_', ' ') </td>
+        </tr>
+        <tr>
+            <th> Trip location :</th>
+            <td> @lookedUp.Location </td>
+        </tr>
+        <tr>
+            <th> Trip begins :</th>
+            <td> @lookedUp.StartDate.ToString("dd/MM/yyyy") </td>
+        </tr>
+        <tr>
+            <th> Trip ends :</th>
+            <td> @lookedUp.EndDate.ToString("dd/MM/yyyy") </td>
+        </tr>
+        <tr>
+            <th> Meeting place :</th>
+            <td> @lookedUp.MeetingSpot.Address </td>
+        </tr>
+        <tr>
+            <th>Coordinates : </th>
+            <td>Lat: @lookedUp.MeetingSpot.Latitude.ToString().Substring(0, 8) Long: @lookedUp.MeetingSpot.Longitude.ToString().Substring(0, 8) </td>
+        </tr>
+        <tr>
+            <th> Meeting time :</th>
+            <td> @lookedUp.MeetingTime </td>
+        </tr>
+        <tr>
+            <th> Max passengers :</th>
+            <td> @lookedUp.MaxPassengers </td>
+        </tr>
+        <tr>
+            <th style="vertical-align:top"> Description :</th>
+            <td style="overflow:hidden"> <textarea cols="1" rows="5" style="width:100%" readonly>@lookedUp.Description</textarea></td>
+        </tr>
+        <tr>
+            <th style="vertical-align:top"> Travel plan :</th>
+            <td style="overflow:hidden"> <textarea cols="1" rows="5" style="width:100%" readonly>@lookedUp.TravelPlan</textarea></td>
+        </tr>
+        <tr>
+            <th> Accommodation :</th>
+            <td> @lookedUp.Accommodation.Name </td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                <a href="\User\AccommodationDetails?id=@Data.accommodations.IndexOf(lookedUp.Accommodation)" style="text-decoration:none; font-size:20px">
+                    <div class="MyButton" style="text-align:center; color:#E8175D; text-decoration:none;"> + Information about accommodation </div>
+                </a>
+            </td>
+        </tr>
+    </table>
+</div>
+
+
+<!-- Image and map -->
+<div style="width:40%; margin:auto; text-align:center; float:right">
+    <img src="~/Images/@lookedUp.Image" style="width:300px; height: 300px; margin:auto" />
+    <br />
+    <div id="map" class="map" style="width:300px; height: 300px; margin:auto">
+        <script type="text/javascript">
+            var map = new ol.Map({
+                target: 'map',
+                layers: [
+                    new ol.layer.Tile({
+                        source: new ol.source.OSM()
+                    })
+                ],
+                view: new ol.View({
+                    center: ol.proj.fromLonLat([@lookedUp.MeetingSpot.Longitude, @lookedUp.MeetingSpot.Latitude]),
+                    zoom: 10
+                })
+            });
+        </script>
+    </div>
+</div>
+
+
+@if (lookedUp.StartDate < DateTime.Now)
+{
+
+    <div style="width:50%; text-align:center; float: left">
+        <h1> Comments: </h1>
+        @foreach (Comment comment in Data.comments.FindAll(x => x.CommentedArrangement.Id == lookedUp.Id))
+        {
+            if (comment.Approved)
+            {
+                <div style="width:80%; background-color: lavender; color: #363636; text-align:left; margin-left:30px; padding-left:20px">
+                    [@comment.Commentator.Username] <br />
+                    @comment.CommentText <br />
+                    @comment.Grade
+                </div>
+                <br/>
+            }
+        }
+
+        @foreach(Reservation res in Data.reservationsPerUser.Values.ToList().FindAll( x => x.SelectedArrangement.Id == lookedUp.Id))
+        {
+            if (u != null && res.PersonReserving.Username.Equals(u.Username))
+            {
+                <form method="post" action="\User\Comment" style="margin: 50px">
+                    <div style="width:60%; height:120px; background-color: lavender; color: #363636; text-align:center; float:left">
+                        <textarea  name="comment" style="overflow:hidden; resize:none; height:120px" class="sameInput" required></textarea>
+                        <input type="number" name="grade" min="1" max="5" style="overflow:hidden;" class="sameInput" required/>
+                        <input type="submit" value="Add comment" style="overflow:hidden;" class="sameInput"/>
+                    </div>
+                </form>
+            }
+        }
+        <br /><br /><br /><br /><br />
+    </div>
+
+}

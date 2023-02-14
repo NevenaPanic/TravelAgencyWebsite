@@ -1,0 +1,121 @@
+﻿@using PR043_2018_Web_projekat.Models;
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="~/Style/MyStyle.css" type="text/css"/>
+</head>
+<body>
+    <!-- light gray - #A8A7A7 ; tonedPink - #CC527A; brightPink - #E8175D; MediumGray - #474747; DarkGray - #363636  -->
+
+    @{
+        User u = (User)(Session["user"]);
+    }
+
+    <div class="topnav">
+        <img src="~/Images/company_logo.png" style="max-width: 48px; max-height: 48px; margin: 1px 1px 0px 1px; float:left;" />
+        @switch (ViewBag.Title)
+        {
+            case "LogIn":
+                <a href="\User\Home">Home</a>
+                <a href="\User\Register">Register</a>
+                <a class="active" href="\User\Login">LogIn</a>
+                <a href="\User\PastArrangements">Past arrangments</a>
+                break;
+            case "Register":
+                <a href="\User\Home">Home</a>
+                <a class="active" href="\User\Register">Register</a>
+                <a href="\User\Login">LogIn</a>
+                <a href="\User\PastArrangements">Past arrangments</a>
+                break;
+            case "Home":
+                <a class="active" href="\User\Home">Home</a>
+                <a href="\User\Register">Register</a>
+                <a href="\User\Login">LogIn</a>
+                <a href="\User\PastArrangements">Past arrangments</a>
+                break;
+            case "PastArrangements":
+                <a class="active" href="\User\Home">Home</a>
+                <a href="\User\Register">Register</a>
+                <a href="\User\Login">LogIn</a>
+                <a class="active" href="\User\PastArrangements">Past arrangments</a>
+                break;
+            default:
+                <a href="\User\Home">Home</a>
+                <a href="\User\Register">Register</a>
+                <a href="\User\Login">LogIn</a>
+                <a href="\User\PastArrangements">Past arrangments</a>
+                break;
+        }
+
+        @if (Session["user"] != null)
+        {
+
+            if (((User)Session["user"]).Role == Role.MANAGER)
+            {
+                switch (ViewBag.Title)
+                {
+                    case "Arrangements":
+                        <a href="\Manager\Accommodations">Accommodations</a>
+                        <a class="active" href="\Manager\Arrangements">Arrangements</a>
+                        <a href="\Manager\Comments">Comments</a>
+                        break;
+                    case "Accommodations":
+                        <a class="active" href="\Manager\Accommodations">Accommodations</a>
+                        <a href="\Manager\Arrangements">Arrangements</a>
+                        <a href="\Manager\Comments">Comments</a>
+                        break;
+                    case "Comments":
+                        <a href="\Manager\Accommodations">Accommodations</a>
+                        <a href="\Manager\Arrangements">Arrangements</a>
+                        <a class="active" href="\Manager\Comments">Comments</a>
+                        break;
+                    default:
+                        <a href="\Manager\Accommodations">Accommodations</a>
+                        <a href="\Manager\Arrangements">Arrangements</a>
+                        <a href="\Manager\Comments">Comments</a>
+                        break;
+                }
+            }
+
+            if (((User)Session["user"]).Role == Role.ADMIN)
+            {
+                switch (ViewBag.Title)
+                {
+                    case "HomeAdmin":
+                        <a class="active" href="\Admin\HomeAdmin">System status</a>
+                        break;
+                    default:
+                        <a href="\Admin\HomeAdmin">System status</a>
+                        break;
+                }
+            }
+
+            if (((User)Session["user"]).Role == Role.TOURIST)
+            {
+                switch (ViewBag.Title)
+                {
+                    case "Reservations":
+                        <a class="active" href="\User\Reservations"> My reservations </a>
+                        break;
+                    default:
+                        <a href="\User\Reservations"> My reservations </a>
+                        break;
+                }
+            }
+
+            <a href="\User\Logout" style="float:right">LogOut</a>
+            if (ViewBag.Title == "ProfilePage")
+            {
+                <a class="active" href="\User\ProfilePage" style="float:right">[ @u.Name @u.Lastname]</a>
+            }
+            else
+            {
+                <a href="\User\ProfilePage" style="float:right">[ @u.Name @u.Lastname]</a>
+            }
+
+        }
+    </div>
+
+    @RenderBody()
+</body>
+</html>

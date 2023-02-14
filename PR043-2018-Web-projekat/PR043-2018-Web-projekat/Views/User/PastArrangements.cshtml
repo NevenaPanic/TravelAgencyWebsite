@@ -1,0 +1,164 @@
+﻿@using PR043_2018_Web_projekat.Models;
+@{
+    ViewBag.Title = "PastArrangements";
+    TimeSpan days;
+    double price = 0;
+    List<Arrangement> pastArrangments = ViewBag.pastArrangements;
+}
+
+<h1 align="center" style="color: #CC527A; font-family:Calibri; font-size: 25px; font-weight:bold"> Past arrangements</h1>
+<br />
+<div style="width: 65%;  border: 3px solid #E8175D; margin-left: 15px; float:left">
+    <br />
+    @foreach (Arrangement arrangement in pastArrangments)
+    {
+        <div style="margin:auto; height:120px; width: 95%; text-align:center; background-color:#474747; color: #A8A7A7; border: 1px solid #CC527A">
+            <div class="arragementItem" style="margin-left:10px">
+                Start date:<br />
+                @arrangement.StartDate.ToString("dd/MM/yyyy")
+            </div>
+            <div class="arragementItem">
+                End date:<br />
+                @arrangement.EndDate.ToString("dd/MM/yyyy")
+            </div>
+            <div class="arragementItem">
+                Days:<br />
+                @{ days = arrangement.EndDate - arrangement.StartDate;}
+                @days.TotalDays
+            </div>
+            <div class="arragementItem" style="padding:0px">
+                <img src="~/Images/@arrangement.Image" style="border-radius:100%; width:100px; height:100px" />
+            </div>
+            <div class="arragementItem">
+                @arrangement.Name
+            </div>
+            <div class="arragementItem" style="float:right; width:150px">
+                <a href="\User\ArrangementDetails?id=@arrangement.Id" style="color:#CC527A; text-decoration:none; font-weight:bold; margin:auto; text-align:center;">
+                    <div style="width:120px; float:right; border: 1px solid #CC527A; border-radius:5px; margin-right:20px; padding:3px; text-align:center" class="MyButton">
+                        See more
+                    </div>
+                </a>
+            </div>
+            <div class="arragementItem" style="float:right; width:100px">
+                Prices from:<br />
+                @{
+                    if (arrangement.Accommodation.AllUnits.Count > 0)
+                    {
+                        List<int> prices = new List<int>();
+                        foreach (AccommodationUnit unit in arrangement.Accommodation.AllUnits)
+                        {
+                            if (!unit.Deleted)
+                            {
+                                prices.Add(unit.PriceForUnit);
+                            }
+                        }
+                        price = prices.Min() * days.TotalDays;
+                    }
+                }
+                @if (price != 0)
+                {
+                    <p>@price &euro;</p>
+                }
+                else
+                {
+                    <p>undefind</p>
+                }
+            </div>
+        </div>
+        <br />
+    }
+    <br />
+</div>
+<div style="width: 30%; margin-right: 10px; float:right; padding:10px">
+    <form method="post" action="\User\SearchPastArrangements">
+        <table align="center" style="border-radius:15px; border: 2px solid #CC527A; background-color: #CC527A; width:80%; padding:10px; color:#363636">
+            <tr>
+                <th colspan="2" style="width:20px; font-size:20px"> Search </th>
+            </tr>
+            <tr>
+                <th> Start date min : </th>
+                <th> Start date max : </th>
+            </tr>
+            <tr>
+                <td><input type="date" name="startFrom" class="sameInput" /></td>
+                <td><input type="date" name="startTo" class="sameInput" /></td>
+            </tr>
+            <tr>
+                <th> End date min : </th>
+                <th> End date max : </th>
+            </tr>
+            <tr>
+                <td><input type="date" name="endFrom" class="sameInput" /></td>
+                <td><input type="date" name="endTo" class="sameInput" /></td>
+            </tr>
+            <tr>
+                <th colspan="2"> Name: </th>
+            </tr>
+            <tr>
+                <td colspan="2"><input name="name" type="text" class="sameInput" /></td>
+            </tr>
+            <tr>
+                <th colspan="2"> Transportation: </th>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <select name="transportation" class="sameInput">
+                        <option value=""> None </option>
+                        @foreach (TransportationType type in (TransportationType[])Enum.GetValues(typeof(TransportationType)))
+                        {
+                            <option value="@type"> @type.ToString().Replace('_', ' ') </option>
+                        }
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <th colspan="2"> Arrangement type: </th>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <select name="type" class="sameInput">
+                        <option value=""> None </option>
+                        @foreach (ArrangmentType type in (ArrangmentType[])Enum.GetValues(typeof(ArrangmentType)))
+                        {
+                            <option value="@type"> @type.ToString().Replace('_', ' ') </option>
+                        }
+                    </select>
+                </td>
+            </tr>
+            <tr><td colspan="2" style="text-align:center"><input type="submit" value="Search" name="search" style="width:90%; background-color:#363636 ; color:#CC527A" /></td></tr>
+            <tr><td colspan="2" style="text-align:center"><input type="submit" value="Show all" name="search" style="width:90%; background-color:#363636 ; color:#CC527A" /></td></tr>
+        </table>
+    </form>
+    <br />
+    <br />
+    <form method="post" action="\User\SortPastArrangements">
+        <table align="center" style="border-radius:15px; border: 2px solid #CC527A; background-color: #CC527A; width:80%; padding:10px; color:#363636">
+            <tr>
+                <th colspan="2"> Sort </th>
+            </tr>
+            <tr>
+                <th colspan="2">
+                    <select name="sortType" class="sameInput">
+                        <option value="name"> Name </option>
+                        <option value="start"> Start date </option>
+                        <option value="end"> End date </option>
+                    </select>
+                </th>
+            </tr>
+            <tr><td colspan="2">&nbsp;</td></tr>
+            <tr>
+                <td style="text-align:center">
+                    <input type="radio" name="way" value="asc" style="text-align:center" checked /><label> Ascending </label>
+                </td>
+                <td style="text-align:center">
+                    <input type="radio" name="way" value="dsc" style="text-align:center" /><label> Descending </label>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" style="text-align:center"><input type="submit" value="Sort" style="width:90%; background-color:#363636 ; color:#CC527A" /></td>
+            </tr>
+        </table>
+    </form>
+</div>
+
+

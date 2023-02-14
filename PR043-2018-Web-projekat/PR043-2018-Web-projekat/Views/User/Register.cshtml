@@ -1,0 +1,65 @@
+﻿@{
+    ViewBag.Title = "Register";
+}
+@using PR043_2018_Web_projekat.Models;
+
+<!DOCTYPE html>
+@{
+    User u = (User)(Session["user"]);
+}
+
+@if (u == null)
+{
+
+    <h1 align="center" style="color: #CC527A">Register</h1>
+    
+    <div style="margin:auto; width: 500px" align="center">
+        <form method="post" action="\User\Register">
+            <table class="formStyle" style="border: 4px solid #CC527A; padding: 15px 15px 15px 15px">
+                <tr>
+                    <th style="width: 180px; color: #CC527A; align-content:center">Username: </th>
+                    <td><input type="text" name="username" required/></td>
+                </tr>
+                <tr>
+                    <th style="color: #CC527A; align-content:center">Password: </th>
+                    <td><input type="password" name="password" required/></td>
+                </tr>
+                <tr>
+                    <th style="color: #CC527A; align-content:center">Name: </th>
+                    <td><input type="text" name="name" required/></td>
+                </tr>
+                <tr>
+                    <th style="color: #CC527A; align-content:center">Lastname: </th>
+                    <td><input type="text" name="lastname" required/></td>
+                </tr>
+                <tr>
+                    <th style="color: #CC527A; align-content:center">Gender: </th>
+                    <td>
+                        <select name="gender" style="width: 100%" required>
+                            <option value="FEMALE">Female</option>>
+                            <option value="MALE">Male</option>>
+                            <option value="OTHER">Other</option>>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <th style="color: #CC527A; align-content:center">E-mail: </th>
+                    <td><input type="email" name="email" required/></td>
+                </tr>
+                <tr>
+                    <th style="color: #CC527A; align-content:center">Date of birth: </th>
+                    <td><input type="date" name="dateOfBirth" style="width: 98%" required/></td>
+                </tr>
+
+                <tr><td><br /></td></tr>
+                <tr>
+                    <td colspan="2" align="center"><input type="submit" value="Register" style="background-color: #474747; color: #CC527A; width: 150px; font-weight:bold" /></td>
+                </tr>
+            </table>
+        </form>
+    </div>
+}
+else
+{
+    <h1 align="center" style="color: #CC527A">You are already REGISTERD!</h1>
+}
